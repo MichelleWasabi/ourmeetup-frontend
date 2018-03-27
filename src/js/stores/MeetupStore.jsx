@@ -4,82 +4,10 @@ export class MeetupStore extends Flux.Store {
 
 
      constructor(){
-         super();
-         this.state = {
-    "meetups": [
-        {
-        "id": 87, 
-        "title": "Miami Tech Meetup", 
-        "thumbnail": "http://lorempixel.com/output/technics-q-c-100-100-1.jpg", 
-        "events": [
-            {
-                "id": 34,
-                "title": "React How-To",
-                "day": "SATURDAY, MARCH 10",
-                "time": "5:00 PM",
-                "image": "http://lorempixel.com/output/technics-q-c-700-500-3.jpg",
-                "rsvp": false
-            },{
-                "id": 56,
-                "title": "Music+Coding",
-                "day": "SATURDAY, MARCH 17",
-                "time": "2:00 PM",
-                "image": "http://lorempixel.com/output/technics-q-c-700-500-5.jpg",
-                "rsvp": false
-            },{
-                "id": 67,
-                "title": "Hardware hacking 101",
-                "day": "THURSDAY, MARCH 22",
-                "time": "6:00 PM",
-                "image": "http://lorempixel.com/output/technics-q-c-700-500-7.jpg",
-                "rsvp": false
-            }
-        ]
-    },{
-        "id": 886, 
-        "title": "Wordpress Meetup",
-        "thumbnail": "http://lorempixel.com/100/100/technics/", 
-        "events": [
-            {
-                "id": 384,
-                "title": "Wordpress for dummies",
-                "day": "MONDAY, MARCH 12",
-                "time": "6:30 PM",
-                "image": "http://lorempixel.com/700/500/technics/",
-                "rsvp": false
-            },{
-                "id": 776,
-                "title": "Wordpress API",
-                "day": "SATURDAY, MARCH 17",
-                "time": "2:00 PM",
-                "image": "http://lorempixel.com/700/500/technics/",
-                "rsvp": false
-            },{
-                "id": 5677,
-                "title": "Wordpress Guttenberg",
-                "day": "THURSDAY, MARCH 22",
-                "time": "5:30 PM",
-                "image": "http://lorempixel.com/700/500/technics/",
-                "rsvp": false
-            }
-        ]
-    },{
-        "id": 123, 
-        "title": "Cat Meetup",
-        "thumbnail": "http://lorempixel.com/100/100/technics/", 
-        "events": [
-            {
-                "id": 456,
-                "title": "Cats and Coffee",
-                "day": "MONDAY, MARCH 12",
-                "time": "6:30 PM",
-                "image": "http://lorempixel.com/700/500/technics/",
-                "rsvp": false
-            }
-        ]
-    }
-    ]
-};
+        super();
+        this.state = {
+            meetups: []
+        };
          
      }
      
@@ -147,7 +75,7 @@ export class MeetupStore extends Flux.Store {
                         updatedEvent = this.state.meetups[i].events[j];
                         updatedEvent.meetup = {};
                         updatedEvent.meetup.id = this.state.meetups[i].id;
-                        updatedEvent.meetup.title = this.state.meetups[i].title.id;
+                        updatedEvent.meetup.title = this.state.meetups[i].title;
                         
                         return updatedEvent;
                 }
@@ -180,20 +108,27 @@ export class MeetupStore extends Flux.Store {
     
 
         
-         _rsvpEventPositively(id){
-             let tempState = this.state;
-             tempState.meetups.forEach((meetup)=>{
-              meetup.events.forEach((event)=>{
+    _rsvpEventPositively(id){
+        let tempState = this.state;
+        tempState.meetups.forEach((meetup)=>{
+            meetup.events.forEach((event)=>{
                 if(event.id===id){
-                event.rspv="yes";
+                    event.rspv="yes";
                 }  
-             })   
-             
+            })   
+         
         });
          
-            this.setStoreState(tempState).emit();
-         } 
+        this.setStoreState(tempState).emit();
+    } 
+    
+    setEvent(data){
+        this.setState({
+            meetups: data
+        }).emit();    
+    }
 }
+
 
 var meetupStore = new MeetupStore();
 export default meetupStore;

@@ -4,24 +4,26 @@ import { Link } from "react-router-dom";
 import InfiniteCalendar from 'react-infinite-calendar';
 import 'react-infinite-calendar/styles.css';
 import Navbar from '../component/Navbar.jsx';
-import meetupStore from '../stores/MeetupStore.jsx';
+import MeetupStore from '../stores/MeetupStore.jsx';
+import MeetupActions from '../actions/MeetupActions.jsx';
 
 export default class Dashboard extends Flux.View {
     
     constructor(){
         super();
         this.state = {
-            events: meetupStore.getAllEvents()
+            events:[]
         };
+        MeetupActions.getMeetups();
+        this.bindStore(MeetupStore);
     }
     
-    componentWillMount() {
-        meetupStore.on("change", () => {
+    handleStoreChanges() {
         this.setState({
-      events: meetupStore.getAll(),
-     });
-  });
-  }
+                events: MeetupStore.getAllEvents(),
+            }); 
+        
+    }
     // componentWillMount(){
         
     // }

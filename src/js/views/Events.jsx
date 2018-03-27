@@ -16,10 +16,11 @@ export default class Events extends Flux.View {
     
     componentWillMount(){
         let tempEvent = meetupStore.getEvent(this.props.match.params.id);
-        this.setState(tempEvent
-        let nextMeetup = meetupStore.getMeetup(this.props.match.params.id);
-        this.setState(nextMeetup);
+        this.setState(tempEvent);
     }
+        // let nextMeetup = meetupStore.getMeetup(this.props.match.params.id);
+        // this.setState(nextMeetup);
+    
     
      handleStoreChanges(data){
         let tempEvent = meetupStore.getEvent(this.props.match.params.id);
@@ -91,8 +92,8 @@ export default class Events extends Flux.View {
                                                 <div className="col-md-10 pt-1">
                                                     <span className="textBy">By</span>
                                                     <span className="link authorTitle"> Name</span>
-                                                    <p><span className="text">From</span>
-                                                    <span className="link meetupTitle">{this.state.meetups.title}</span></p>
+                                                    <p><span className="text">From </span>
+                                                    <span className="link meetupTitle">{this.state.meetup.title}</span></p>
                                                 </div>        
                                             </div>  
                                         </div>
@@ -147,7 +148,7 @@ export default class Events extends Flux.View {
                                         </div>
                                     </div>
                                 </div>
-                                <img top ="w-100" src="http://via.placeholder.com/350x150" alt="map of the location" />                            
+                                <img top ="w-100" src="https://via.placeholder.com/350x150" alt="map of the location" />                            
                                 
                             </div>
                         </div>
@@ -157,7 +158,7 @@ export default class Events extends Flux.View {
                         <div className="col-md-8 order-md-1">
                             <div className="row">
                                 <div className="col-12">
-                                <img className="img-fluid eventPhoto" src="http://via.placeholder.com/500X300" alt="event image of..." />
+                                <img className="img-fluid eventPhoto" src="https://via.placeholder.com/500X300" alt="event image of..." />
                                 <h5 className="details"><strong>Details</strong></h5>
                                 <p className="bodyText">Snuggle up with cute kitties, hot lattes, and a book. We host this event twice a month for a place to socialize or maybe come out for alternative therapy.<br/><br/>There are a few rules to follow for this event:</p>
                                 <ul>
@@ -180,7 +181,7 @@ export default class Events extends Flux.View {
 	                <div className="container">
 	                    <div className="row justify-content-between">
 			                <div className="col-6">
-				                <img className="img-fluid" src="http://placehold.it/50x50" alt="" />
+				                <img className="img-fluid" src="https://placehold.it/50x50" alt="" />
 			                </div>
                 			<div className="col-6">
                 				<ul className="footer__links list-inline text-right">
