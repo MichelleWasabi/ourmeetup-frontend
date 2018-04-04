@@ -1,9 +1,9 @@
 import React from "react";
-import Flux from "react-flux-dash";
+import Flux from "@4geeksacademy/react-flux-dash";
 import { Link } from "react-router-dom";
 import Navbar from '../component/Navbar.jsx';
 
-import meetupStore from '../stores/MeetupStore.jsx';
+import MeetupStore from '../stores/MeetupStore.jsx';
 import meetupActions from '../actions/MeetupActions.jsx';
 export default class Events extends Flux.View {
     
@@ -11,11 +11,17 @@ export default class Events extends Flux.View {
         super();
         
         this.state = {};
-        //this.bindStore(sessionStore);
+        //still use this call to pull from the server then use the function to request specific info
+        meetupActions.getMeetups();
+        this.bindStore(MeetupStore, function(){
+            // retreive store data
+             let tempEvent = MeetupStore.getEvent(this.props.match.params.id);
+            this.setState(tempEvent);
+        });
     }
     
     componentWillMount(){
-        let tempEvent = meetupStore.getEvent(this.props.match.params.id);
+        let tempEvent = MeetupStore.getEvent(this.props.match.params.id);
         this.setState(tempEvent);
     }
         // let nextMeetup = meetupStore.getMeetup(this.props.match.params.id);
@@ -23,7 +29,7 @@ export default class Events extends Flux.View {
     
     
      handleStoreChanges(data){
-        let tempEvent = meetupStore.getEvent(this.props.match.params.id);
+        let tempEvent = MeetupStore.getEvent(this.props.match.params.id);
         // let tempEvent = tempMeetup.events.find( (event) => { return event.id === parseInt(this.props.match.params.id) })
         this.setState(tempEvent);
     }
@@ -32,6 +38,7 @@ export default class Events extends Flux.View {
         
        
         // let rsvpButtons = "";
+        if(typeof this.state.day === 'undefined') return (<h2> event not found</h2>);
         // if(this.state.events.rsvp === "yes"){
         //     rsvpButtons =    
         //         <div className="row rsvpBTN flex-nowrap">
@@ -93,7 +100,9 @@ export default class Events extends Flux.View {
                                                     <span className="textBy">By</span>
                                                     <span className="link authorTitle"> Name</span>
                                                     <p><span className="text">From </span>
-                                                    <span className="link meetupTitle">{this.state.meetup.title}</span></p>
+                                                       {/*  <Link className="meetupLink" to={"/meetup/"}>{this.state.meetup.title}</Link>*/}
+
+                                                  </p>
                                                 </div>        
                                             </div>  
                                         </div>

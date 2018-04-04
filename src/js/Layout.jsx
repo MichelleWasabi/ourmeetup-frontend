@@ -1,5 +1,5 @@
 import React from 'react';
-import Flux from "react-flux-dash";
+import Flux from "@4geeksacademy/react-flux-dash";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Dashboard from "./views/Dashboard.jsx";
 import Groups from "./views/Groups.jsx";

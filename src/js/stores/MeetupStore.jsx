@@ -1,32 +1,18 @@
-import Flux from 'react-flux-dash';
+import Flux from '@4geeksacademy/react-flux-dash';
 export class MeetupStore extends Flux.Store {
-   
 
-
-     constructor(){
+    constructor(){
         super();
-        this.state = {
-            meetups: []
-        };
-         
+            this.state = {
+                meetups: []
+            };
      }
      
      
-     getAllMeetups(){
-         return this.state;
+    getAllMeetups(){
+        return this.state.meetups;
      }
     
-    //  getAllMeetups(){
-    //      let meetups = [];
-         
-    //      this.state.meetups.forEach( (meetup)=>{
-    //          meetup = {};
-    //          meetup.id = meetup.id;
-    //          meetup.title= meetup.title;
-    //      })
-    //      return meetups;
-    //  }
-     
      getAllEvents(){
          let events = [];
          
@@ -122,9 +108,9 @@ export class MeetupStore extends Flux.Store {
         this.setStoreState(tempState).emit();
     } 
     
-    setEvent(data){
-        this.setState({
-            meetups: data
+    _setEvent(data){
+        this.setStoreState({
+            meetups: data.meetups
         }).emit();    
     }
 }

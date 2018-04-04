@@ -1,9 +1,9 @@
 import React from "react";
-import Flux from "react-flux-dash";
+import Flux from "@4geeksacademy/react-flux-dash";
 import { Link } from "react-router-dom";
 import Navbar from '../component/Navbar.jsx';
 
-import meetupStore from '../stores/MeetupStore.jsx';
+import MeetupStore from '../stores/MeetupStore.jsx';
 import meetupActions from '../actions/MeetupActions.jsx';
 export default class Meetup extends Flux.View {
     
@@ -12,26 +12,56 @@ export default class Meetup extends Flux.View {
         super();
         
         this.state = {};
-        //this.bindStore(sessionStore);
-    }
+            meetupActions.getMeetups();
+                this.bindStore(MeetupStore, function(){
+                // retreive any store data
+                let tempEvent = MeetupStore.getMeetup(this.props.match.params.id);
+                this.setState(tempEvent);
+            });
+        }
     
     componentWillMount(){
-        let tempEvent = meetupStore.getMeetup(this.props.match.params.id);
-        // let tempEvent = tempMeetup.events.find( (event) => { return event.id === parseInt(this.props.match.params.id) })
+        let tempEvent = MeetupStore.getMeetup(this.props.match.params.id);
         this.setState(tempEvent);
     }
+  
     
      handleStoreChanges(data){
         //console.log('change on the state', todoStore.getAllTasks());
-        let tempMeetup = meetupStore.getMeetup(this.props.match.params.id);
+        let tempMeetup = MeetupStore.getMeetup(this.props.match.params.id);
         let tempEvent = tempMeetup.events.find( (event) => { return event.id === parseInt(this.props.match.params.id) })
         this.setState(tempEvent);
     }
     
     render(){
+        
+        if(typeof this.state.title === 'undefined') return (<h2> event not found</h2>);
+        
+        var meetupEvents = this.state.events.map((event) => {
+            return(
+            <div key={event.id} className="card mb-5">
+                <div className="card-header">
+                    <h3>{event.day}</h3>
+                </div>
+                <div className="card-body">
+                    <div className="row">
+                        <div className="col-md-2">
+                            <h5>{event.time}</h5>
+                        </div>
+                        <div className="col-md-10">
+                            <h5 className="card-title">{event.title}</h5>
+                            <Link to={"/events/" + event.id} className="btn btn-primary">View</Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           );
+        });
+ 
         return(
         <div>
-            
+         {/*   */}   
             <Navbar/>
             
             <div className="container-fluid mt-4">
@@ -70,8 +100,8 @@ export default class Meetup extends Flux.View {
                         </div>
                         
                     </div>  
-               
-                    <div className="row">
+               {/* the navigatio for later  */}
+                   {/* <div className="row">
                         <div className="col-8">
                         <nav className="nav nav-pills nav-fill">
                           <a className="nav-item nav-link" href="#">Our Group</a>
@@ -82,55 +112,55 @@ export default class Meetup extends Flux.View {
                           <a className="nav-item nav-link disabled" href="#">More</a>
                         </nav>
                         </div>
-                    </div>
+                    </div>*/}
                     
-            </div> 
+             
             
-            
-                <div className="container align-center mt-4">
-                 <div className="row">
-                        <div className="col-8">
-                        <h5>Next Meetup</h5>
-                        </div>
-                        <br></br>
-            </div>
-                   <div className="card w-100">
-                   <div className="card-body"> 
                     <div className="row">
                         
-                            
-                                <div className="col-8 h-100">
-                                    
-                            
-                                    <span className="card-subtitle text-muted">Location</span>
-                                    <h2 className="card-title">Group Name</h2>
-                                     <h6 className="card-text">Sed tortor enim, varius sed maximus vel, scelerisque id leo. Phasellus congue lectus quis blandit volutpat. Ut eget venenatis magna. Nullam purus lacus, eleifend at pellentesque a, dignissim at ante. Duis hendrerit interdum libero quis feugiat. Nam et ex vel lectus volutpat iaculis ac vitae augue. Donec mattis, neque sed rutrum egestas, velit est vestibulum sem, ac ultricies massa metus non nisi. Phasellus scelerisque dolor at felis ullamcorper condimentum. </h6>
-                                     <br></br>
-                                      <span className="card-subtitle text-muted">7 going</span>
-                                      
-                                    
-                                </div>
-                                <div className="col-4">
-                                <img className="card-img-top mb-3" src="https://via.placeholder.com/350x200" alt="Card image cap"></img>
-                                    <div className="row">
-                                        <div className="col-12">
-                                            <Link to="/event/2" className="btn btn-info text-align-center w-100 mb-3">Attend</Link><br></br>
-                                        </div>
-                                    </div>
-                                
-                                <span className="card-subtitle text-muted">7777 SW 77 st, Miami FL 33177</span>
-                               
-                                
-                                </div>
-                        </div>        
-                                
-                     </div>         
-                    </div>  
+                            <h5 className="mt-1">Next Meetup</h5>
+                        <br></br>
+                    </div>
+            
+                <div className="row">
                 
-                </div>
+                {/* LEFT Side*/}
+                    <div className="col-md-8">
+                        <div className="card w-100">
+                            <div className="card-body">
+                                <span className="card-subtitle text-muted">Location</span>
+                                <h2 className="card-title">Group Name</h2>
+                                    <h6 className="card-text">Sed tortor enim, varius sed maximus vel, scelerisque id leo. Phasellus congue lectus quis blandit volutpat. Ut eget venenatis magna. Nullam purus lacus, eleifend at pellentesque a, dignissim at ante. Duis hendrerit interdum libero quis feugiat. Nam et ex vel lectus volutpat iaculis ac vitae augue. Donec mattis, neque sed rutrum egestas, velit est vestibulum sem, ac ultricies massa metus non nisi. Phasellus scelerisque dolor at felis ullamcorper condimentum. </h6>
+                                   
+                                <span className="card-subtitle text-muted">7 going</span>
+                            </div>
+                        </div>
+                        
+                    </div>
                
+                            {/* RIGHT Side*/}
+                    <div className="col-md-4">
+                        <img className="card-img-top mb-3" src="https://via.placeholder.com/350x200" alt="Card image cap"></img>
+                            <div className="row">
+                                <div className="col-12">
+                                    <Link to="/event/2" className="btn btn-info text-align-center w-100 mb-3">Attend</Link><br></br>
+                                </div>
+                            </div>
+                        <span className="card-subtitle text-muted">7777 SW 77 st, Miami FL 33177</span>
+                        
+                         {/*adds events dynamically */}
                 
-        </div>       
+                        <div className="row">
+                            <div className="col-12">
+                                    {meetupEvents}
+                            </div>
+                        </div>
+                    </div>
+                </div>        
+            </div>     
+        </div> 
+        
+    
             );
             
     }

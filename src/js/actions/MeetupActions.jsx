@@ -1,4 +1,4 @@
-import Flux from 'react-flux-dash';
+import Flux from '@4geeksacademy/react-flux-dash';
 
 class MeetupActions extends Flux.Action {
     
@@ -11,12 +11,12 @@ class MeetupActions extends Flux.Action {
           .then(function(response) {
             return (response.json());
           })
-          .then(function(content){
+          .then((content) => {
             console.log(content)
             this.dispatch("MeetupStore.setEvent", content)
           })
-          .catch(function() {
-            console.log("Error")
+          .catch((errorMsg) => {
+            console.log("Error", errorMsg)
           });
     }
     

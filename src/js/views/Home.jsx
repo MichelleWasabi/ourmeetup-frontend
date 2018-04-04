@@ -1,5 +1,5 @@
 import React from "react";
-import Flux from "react-flux-dash";
+import Flux from "@4geeksacademy/react-flux-dash";
 import { Link } from "react-router-dom";
 //include images into your bundle
 import rigoImage from '../../img/rigo-baby.jpg';
