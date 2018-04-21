@@ -14,8 +14,6 @@ export default class Dashboard extends Flux.View {
         this.state = {
             events: MeetupStore.getAllEvents()
         };
-        //get the information from the backend 
-        MeetupActions.getMeetups();
         //this makes the view aware of changes in the store 
         this.bindStore(MeetupStore, function(){
             // retreive any store data
@@ -42,22 +40,23 @@ export default class Dashboard extends Flux.View {
         
         
         var meetupEvents = this.state.events.map((event) => {
+            event.meetup = typeof(event.meetup) === 'undefined'? {ID: 0, post_title : ""} : event.meetup;
             return(
-            <div key={event.id} className="card mb-5">
+            <div key={event.ID} className="card mb-5">
                 <div className="card-header">
-                    <h3>{event.day}</h3>
+                    <h3>{event.meta_keys.day[0]}</h3>
                 </div>
                 <div className="card-body">
                     <div className="row">
                         <div className="col-md-2">
-                            <h5>{event.time}</h5>
+                            <h5>{event.meta_keys.time[0]}</h5>
                         </div>
                         <div className="col-md-10">
-                            <h5 className="card-title">{event.title}</h5>
+                            <h5 className="card-title">{event.post_title}</h5>
                             <h6>
-                            <Link className="card-text" to={"/meetup/" + event.meetup.id}>{event.meetup.title}</Link>
+                            <Link className="card-text" to={"/meetup/" + event.meetup.ID}>{event.meetup.post_title}</Link>
                             </h6>
-                            <Link to={"/events/" + event.id} className="btn btn-primary">View</Link>
+                            <Link to={"/events/" + event.ID} className="btn btn-primary">View</Link>
                         </div>
                     </div>
                 </div>

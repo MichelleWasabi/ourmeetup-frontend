@@ -70,3 +70,8 @@ body{
 	background-color: #17cdef;
 	
 }
+
+p.nextMeetup {
+    margin-top: 20px;
+    margin-left: 20px;
+}

@@ -5,9 +5,17 @@ import Dashboard from "./views/Dashboard.jsx";
 import Groups from "./views/Groups.jsx";
 import Events from "./views/Events.jsx";
 import Meetup from "./views/Meetup.jsx";
-
+//notice that there's only ONE dot meaning stay in the same folder ans go to actions because LAYOUT is a brother of ACTIONS
+import meetupActions from './actions/MeetupActions.jsx';
 
 export default class Layout extends Flux.View {
+  constructor(){
+    super();
+    meetupActions.getMeetups();
+    meetupActions.getEvents();
+    meetupActions.loadSession();
+
+  }
   render() {
     return (
       <div>
@@ -28,3 +36,6 @@ export default class Layout extends Flux.View {
     );
   }
 }
+
+
+// layout is the parent of ALL the views. It loads first

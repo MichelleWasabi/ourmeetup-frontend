@@ -2,7 +2,7 @@ import React from "react";
 import Flux from "@4geeksacademy/react-flux-dash";
 import { Link } from "react-router-dom";
 import Navbar from '../component/Navbar.jsx';
-
+import Moment from "moment";
 import MeetupStore from '../stores/MeetupStore.jsx';
 import meetupActions from '../actions/MeetupActions.jsx';
 export default class Events extends Flux.View {
@@ -10,70 +10,53 @@ export default class Events extends Flux.View {
     constructor(){
         super();
         
-        this.state = {};
-        //still use this call to pull from the server then use the function to request specific info
-        meetupActions.getMeetups();
-        this.bindStore(MeetupStore, function(){
+        this.state = {
+            event: {},
+            session: {}
+        };
+            //bind hears changes from the store 
+            this.bindStore(MeetupStore, function(){
             // retreive store data
-             let tempEvent = MeetupStore.getEvent(this.props.match.params.id);
-            this.setState(tempEvent);
+            this.setState({
+                event: MeetupStore.getEvent(this.props.match.params.id),
+                session: MeetupStore.getSession()
+            });
+        
         });
     }
     
     componentWillMount(){
-        let tempEvent = MeetupStore.getEvent(this.props.match.params.id);
-        this.setState(tempEvent);
+        this.setState({
+                event: MeetupStore.getEvent(this.props.match.params.id),
+                session: MeetupStore.getSession()
+            });
     }
         // let nextMeetup = meetupStore.getMeetup(this.props.match.params.id);
         // this.setState(nextMeetup);
     
     
-     handleStoreChanges(data){
-        let tempEvent = MeetupStore.getEvent(this.props.match.params.id);
-        // let tempEvent = tempMeetup.events.find( (event) => { return event.id === parseInt(this.props.match.params.id) })
-        this.setState(tempEvent);
-    }
-    
     render(){
         
-       
-        // let rsvpButtons = "";
-        if(typeof this.state.day === 'undefined') return (<h2> event not found</h2>);
-        // if(this.state.events.rsvp === "yes"){
-        //     rsvpButtons =    
-        //         <div className="row rsvpBTN flex-nowrap">
-        //             <div className="col-md-5">
-        //                 <button type="button" className="btn btn-primary w-100 yesBTN" disabled onClick={() => meetupActions.rsvpEventPositively(this.props.match.params.id)}>Yes</button>
-        //             </div>
-        //             <div className="col-md-5">
-        //                 <button type="button" className="btn btn-primary w-100 noBTN">No</button>
-        //             </div>
-        //         </div>;
-            
-        // }else if(this.state.events.rsvp === "no"){
-        //     rsvpButtons = 
-        //         <div className="row rsvpBTN flex-nowrap">
-        //             <div className="col-md-5">
-        //                 <button type="button" className="btn btn-primary w-100 yesBTN" onClick={() => meetupActions.rsvpEventPositively(this.props.match.params.id)}>Yes</button>
-        //             </div>
-        //             <div className="col-md-5">
-        //                 <button type="button" className="btn btn-primary w-100 noBTN">No</button>
-        //             </div>
-        //         </div>
-        //     ;
-        // }else{
-        //     rsvpButtons = 
-        //         <div className="row rsvpBTN flex-nowrap">
-        //             <div className="col-md-5">
-        //                 <button type="button" className="btn btn-primary w-100 yesBTN" onClick={() => meetupActions.rsvpEventPositively(this.props.match.params.id)}>Yes</button>
-        //             </div>
-        //             <div className="col-md-5">
-        //                 <button type="button" className="btn btn-primary w-100 noBTN">No</button>
-        //             </div>
-        //         </div>
-        //     ;
-        // }
-       
+        if(typeof this.state.event === 'undefined') return (<h2> event not found</h2>);
+        // let disabled1 = this.state.event.rsvp === "yes" ? "disabled" : "";
+        // let disabled2 = this.state.event.rsvp === "no" ? "disabled" : "";
+       let yesDisabled = this.state.event.meta_keys._rsvpYes.includes(this.state.session.id.value) ? "disabled" : "";
+       let noDisabled = this.state.event.meta_keys._rsvpNo.includes(this.state.session.id.value) ? "disabled" : "";
+
+
+        let rsvpButtons =    
+                <div className="row rsvpBTN flex-nowrap">
+                    <div className="col-md-5">
+                        <button type="button" className="btn btn-primary w-100 yesBTN" disabled={yesDisabled} onClick={() => meetupActions.rsvpEventPositively(this.props.match.params.ID, this.state.session.id.value)}>You're in!</button>
+                    </div>
+                    <div className="col-md-5">
+                        <button type="button" className="btn btn-primary w-100 noBTN" disabled={noDisabled} onClick={() => meetupActions.rsvpEventNegative(this.props.match.params.ID)}>You're out!</button>            
+                    </div>
+                </div>;
+         {/* regular expressions google it regexr.com so you can more effectively use replace PRACTICE ON THEIR WEBSITE */}
+         let newDate = Moment(this.state.event.meta_keys.day + "T" + this.state.event.meta_keys.time.replace(/:/g, ""));
+         
+         let theMeetup = typeof(this.state.event.meetup !== 'undefined' ? this.state.event.meetup: {ID:0, post_title: "Loadin"});
        
         return(
             <div>
@@ -89,8 +72,8 @@ export default class Events extends Flux.View {
                                 <div className="col-md-8 jumboLeft">
                                     <div className="row">
                                         <div className="col-12">
-                                            <p className="eventDate">{this.state.day}</p>
-                                            <h1 className="eventTitle">{this.state.title}</h1>
+                                            <p className="eventDate">{newDate.format("MMM Do YYYY").toString()}</p>  {/* */}
+                                            <h1 className="eventTitle">{this.state.event.post_title}</h1>
                                             <div className="row">
                                                 <div className="col-md-2 text-center">
                                             
@@ -100,8 +83,7 @@ export default class Events extends Flux.View {
                                                     <span className="textBy">By</span>
                                                     <span className="link authorTitle"> Name</span>
                                                     <p><span className="text">From </span>
-                                                       {/*  <Link className="meetupLink" to={"/meetup/"}>{this.state.meetup.title}</Link>*/}
-
+                                                     <span><Link className="meetupLink" to={"/meetup/" + theMeetup.ID}>{theMeetup.post_title}</Link></span> 
                                                   </p>
                                                 </div>        
                                             </div>  
@@ -115,14 +97,9 @@ export default class Events extends Flux.View {
                                     <div className="attendance">
                                         <p><strong>Are you going?</strong> X people going</p>
                                     </div>
-                                    <div className="row rsvpBTN flex-nowrap">
-                                        <div className="col-md-5">
-                                            <button type="button" className="btn btn-primary w-100 yesBTN" onClick={()=>meetupActions.rsvpEventPositively(this.props.match.params.id)}> Yes</button>
-                                        </div>
-                                        <div className="col-md-5">
-                                            <button type="button" className="btn btn-primary w-100 noBTN">No</button>
-                                        </div>
-                                    </div>
+                                    {/* pulls the code from above for the yes and no rsvp buttons */}
+                                    {rsvpButtons}
+                                    
                                     <div className="row socialMedia flex-nowrap">
                                         <div className="col-md-6">
                                             <button type="button" className="btn-floating btn-sm btn-twi"><i className="fab fa-twitter"></i></button>
@@ -151,8 +128,8 @@ export default class Events extends Flux.View {
                                             <span> <i className="far fa-clock"></i></span>
                                         </div>
                                         <div>
-                                            <span className="card-date">Tuesday, March 13, 2018</span><br/>
-                                            <span className="card-time">6:00 PM to 9:00 PM</span><br/>
+                                            <span className="card-date">{newDate.format("dddd, MMM, DD, YYYY").toString()}</span><br/>
+                                            <span className="card-time">{newDate.format("h:mm a").toString()}</span><br/>
                                             <span className="card-schedule">Every first and last Tuesday of the month</span>
                                         </div>
                                     </div>
