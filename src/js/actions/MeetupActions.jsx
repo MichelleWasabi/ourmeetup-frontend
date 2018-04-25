@@ -2,12 +2,26 @@ import Flux from '@4geeksacademy/react-flux-dash';
 
 class MeetupActions extends Flux.Action {
     
-    rsvpEventPositively(id, user){
-      
-      fetch("https://try-wordpreess-michelle19.c9users.io/wp-json/sample_api/v1/events/rsvp/" + id)
-        this.dispatch('MeetupStore.rsvpEventPositively', id);
-    
-    }
+    rsvpEventPositively(id, userId){
+      var data = {
+        user: userId,
+        answer: "yes"
+      };  
+      fetch("https://try-wordpreess-michelle19.c9users.io/wp-json/sample_api/v1/events/rsvp/" + id,
+      {
+        method: 'PUT', //or 'POST'
+        body: JSON.stringify(data),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      })
+      .then(data=> {
+        if(data.status !== 200){
+          throw new Error(data);
+        }
+        this.loadApiEvents();
+      });
+  }
     
     rsvpEventNegative(id, user){
       
@@ -18,7 +32,7 @@ class MeetupActions extends Flux.Action {
     
     // https://assets.breatheco.de/apis/meetup/meetups   old one 
     
-    getMeetups(){
+    loadApiMeetups(){
         fetch('https://try-wordpreess-michelle19.c9users.io/wp-json/sample_api/v1/meetups')
           .then(function(response) {
             return (response.json());
@@ -34,7 +48,7 @@ class MeetupActions extends Flux.Action {
           });
     }
     
-    getEvents(){
+    loadApiEvents(){
         fetch('https://try-wordpreess-michelle19.c9users.io/wp-json/sample_api/v1/events')
           .then(function(response) {
             return (response.json());

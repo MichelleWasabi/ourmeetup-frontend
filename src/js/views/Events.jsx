@@ -38,19 +38,22 @@ export default class Events extends Flux.View {
     render(){
         
         if(typeof this.state.event === 'undefined') return (<h2> event not found</h2>);
-        // let disabled1 = this.state.event.rsvp === "yes" ? "disabled" : "";
-        // let disabled2 = this.state.event.rsvp === "no" ? "disabled" : "";
-       let yesDisabled = this.state.event.meta_keys._rsvpYes.includes(this.state.session.id.value) ? "disabled" : "";
-       let noDisabled = this.state.event.meta_keys._rsvpNo.includes(this.state.session.id.value) ? "disabled" : "";
-
+        let yesDisabled = "";
+        let noDisabled = "";
+        if(typeof this.state.event.meta_keys._rsvpYes !== 'undefined'){
+            yesDisabled = this.state.event.meta_keys._rsvpYes.includes(this.state.session.id.value) ? "disabled" : "";
+        }
+        if(typeof this.state.event.meta_keys._rsvpNo !== 'undefined'){
+            noDisabled = this.state.event.meta_keys._rsvpNo.includes(this.state.session.id.value) ? "disabled" : "";
+        }
 
         let rsvpButtons =    
                 <div className="row rsvpBTN flex-nowrap">
                     <div className="col-md-5">
-                        <button type="button" className="btn btn-primary w-100 yesBTN" disabled={yesDisabled} onClick={() => meetupActions.rsvpEventPositively(this.props.match.params.ID, this.state.session.id.value)}>You're in!</button>
+                        <button type="button" className="btn btn-primary w-100 yesBTN" disabled={yesDisabled} onClick={() => meetupActions.rsvpEvent(this.props.match.params.ID, this.state.session.id.value, "yes")}>You're in!</button>
                     </div>
                     <div className="col-md-5">
-                        <button type="button" className="btn btn-primary w-100 noBTN" disabled={noDisabled} onClick={() => meetupActions.rsvpEventNegative(this.props.match.params.ID)}>You're out!</button>            
+                        <button type="button" className="btn btn-primary w-100 noBTN" disabled={noDisabled} onClick={() => meetupActions.rsvpEvent(this.props.match.params.ID), "no"}>You're out!</button>            
                     </div>
                 </div>;
          {/* regular expressions google it regexr.com so you can more effectively use replace PRACTICE ON THEIR WEBSITE */}

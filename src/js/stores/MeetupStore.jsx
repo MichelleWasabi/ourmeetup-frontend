@@ -177,7 +177,7 @@ export class MeetupStore extends Flux.Store {
     
     _rsvpSuccess(id, user){
         let tempState = this.state;
-        let updatedEvent = tempState.events.(find( theEvent) => id = theEvent.ID);
+        let updatedEvent = tempState.events.find( (theEvent) => id = theEvent.ID);
         updatedEvent.meta_keys._rsvpUes.push(user);
         this.setStoreState(tempState).emit();
     }
