@@ -24,12 +24,7 @@ class MeetupActions extends Flux.Action {
       });
   }
     
-    rsvpEventNegative(id, user){
-      
-      fetch("https://try-wordpreess-michelle19.c9users.io/wp-json/sample_api/v1/events/rsvp/" + id)
-
-      this.dispatch('MeetupStore.rsvpEventNegative', id);
-    }
+  
     
     // https://assets.breatheco.de/apis/meetup/meetups   old one 
     

@@ -36,8 +36,7 @@ export default class Events extends Flux.View {
                 session: MeetupStore.getSession()
             });
     }
-        // let nextMeetup = meetupStore.getMeetup(this.props.match.params.id);
-        // this.setState(nextMeetup);
+
         
 handleUsername(e){
     let tempState = this.state;
@@ -62,7 +61,23 @@ handlePassword(e){
     
     render(){
         
-        let rsvpButtons = typeof (this.state.session.user_nicename) === 'undefined' ?
+        if(typeof this.state.event === 'undefined') return (<h2> event not found</h2>);
+        let yesDisabled = "";
+        let noDisabled = "";
+        if(typeof this.state.event.meta_keys._rsvpYes !== 'undefined'){
+            yesDisabled = this.state.event.meta_keys._rsvpYes.includes(this.state.session.user_nicename) ? "disabled" : "";
+        }
+        if(typeof this.state.event.meta_keys._rsvpNo !== 'undefined'){
+            noDisabled = this.state.event.meta_keys._rsvpNo.includes(this.state.session.user_nicename) ? "disabled" : "";
+        }
+
+        
+         {/* regular expressions google it regexr.com so you can more effectively use replace PRACTICE ON THEIR WEBSITE */}
+         let newDate = Moment(this.state.event.meta_keys.day + "T" + this.state.event.meta_keys.time.replace(/:/g, ""));
+         
+         let theMeetup = typeof(this.state.event.ID !== 'undefined' ? this.state.event.ID: {ID:0, post_title: "Loading"});
+         
+          let rsvpButtons = typeof (this.state.session.user_nicename) === 'undefined' ?
             <div>    
                 <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                   Login to RSVP
@@ -102,23 +117,7 @@ handlePassword(e){
                 <div className="col-md-5">
                     <button type="button" className="btn btn-primary w-100 noBTN" disabled={noDisabled} onClick={() => MeetupActions.rsvpEvent(this.props.match.params.id, this.state.session.user_nicename, "no")}>You're out!</button>            
                 </div>
-            </div>;
-        
-        if(typeof this.state.event === 'undefined') return (<h2> event not found</h2>);
-        let yesDisabled = "";
-        let noDisabled = "";
-        if(typeof this.state.event.meta_keys._rsvpYes !== 'undefined'){
-            yesDisabled = this.state.event.meta_keys._rsvpYes.includes(this.state.session.user_nicename) ? "disabled" : "";
-        }
-        if(typeof this.state.event.meta_keys._rsvpNo !== 'undefined'){
-            noDisabled = this.state.event.meta_keys._rsvpNo.includes(this.state.session.user_nicename) ? "disabled" : "";
-        }
-
-        
-         {/* regular expressions google it regexr.com so you can more effectively use replace PRACTICE ON THEIR WEBSITE */}
-         let newDate = Moment(this.state.event.meta_keys.day + "T" + this.state.event.meta_keys.time.replace(/:/g, ""));
-         
-         let theMeetup = typeof(this.state.event.meetup !== 'undefined' ? this.state.event.meetup: {ID:0, post_title: "Loading"});
+            </div>
        
         return(
             <div>
