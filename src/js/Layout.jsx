@@ -5,15 +5,16 @@ import Dashboard from "./views/Dashboard.jsx";
 import Groups from "./views/Groups.jsx";
 import Events from "./views/Events.jsx";
 import Meetup from "./views/Meetup.jsx";
+import Login from "./views/Login.jsx";
+
 //notice that there's only ONE dot meaning stay in the same folder ans go to actions because LAYOUT is a brother of ACTIONS
 import meetupActions from './actions/MeetupActions.jsx';
 
 export default class Layout extends Flux.View {
   constructor(){
     super();
-    meetupActions.getMeetups();
-    meetupActions.getEvents();
-    meetupActions.loadSession();
+    meetupActions.loadApiMeetups();
+    meetupActions.loadApiEvents();
 
   }
   render() {
@@ -27,6 +28,8 @@ export default class Layout extends Flux.View {
               <Route exact path="/groups/:id" component={Groups} />
               <Route exact path="/events/:id" component={Events} />
               <Route exact path="/meetup/:id" component={Meetup} />
+              <Route exact path="/login/" component={Login} />
+
 
               <Route render={() => <h1>Not found!</h1>} />
             </Switch>

@@ -1,7 +1,12 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import MeetupActions from '../actions/MeetupActions.jsx';
+import MeetupStore from '../stores/MeetupStore.jsx';
 
 export default class Navbar extends React.Component{
+    
+    
+    
     render(){
         return(
            
@@ -15,6 +20,9 @@ export default class Navbar extends React.Component{
                         <ul className="navbar-nav">
                             <li className="nav-item active">
                                 <Link className="nav-link nav-item theDashboard" to="/"> Dashboard</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link nav-item theLogin" to="/login/">Login</Link>
                             </li>
                         </ul>
                     </div>

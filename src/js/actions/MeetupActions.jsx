@@ -1,11 +1,12 @@
 import Flux from '@4geeksacademy/react-flux-dash';
 
 class MeetupActions extends Flux.Action {
+  
     
-    rsvpEventPositively(id, userId){
+    rsvpEvent(id, userId, answer){
       var data = {
-        user: userId,
-        answer: "yes"
+        "user": userId,
+        "answer": answer
       };  
       fetch("https://try-wordpreess-michelle19.c9users.io/wp-json/sample_api/v1/events/rsvp/" + id,
       {
@@ -63,21 +64,47 @@ class MeetupActions extends Flux.Action {
             console.log("Error", errorMsg);
           });
     }
-    
-    loadSession(){
-      // REST API AUTH
-    
-      // Simulating USER ID
-      fetch('https://randomuser.me/api/?inc=id,name,picture')
-      .then (res => res.json())
-      .catch(error=>{
-        // console.error('Error', error)
+    //runs in order so fetch happens first or returns an error but if all good then goes onto the next step. Literally runs in order: fetch, response, answer, and then data
+    loadSession(username, password){
+      var data = {
+        "username": username,
+        "password": password
+      };  
+      fetch('https://try-wordpreess-michelle19.c9users.io/wp-json/jwt-auth/v1/token',
+      {
+        method: 'POST', //or 'POST'
+        body: JSON.stringify(data),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
       })
-      .then(response =>{
-        this.dispatch('MeetupStore.setSession', response);
+      .then( (response)=> {
+        if(response.status !== 200) throw new Error(response);
+        
+        return response.json();
+        
+      }).then( (data) => {
+        if(typeof(data.token) === "undefined") throw new Error(data.message);
+    
+        this.dispatch('MeetupStore.setSession', data);
+      }).catch(error => {
+        this.dispatch('MeetupStore.error', error);
       });
+  }
+    // loadSession(){
+    //   // REST API AUTH
+    
+    //   // Simulating USER ID
+    //   fetch('https://randomuser.me/api/?inc=id,name,picture')
+    //   .then (res => res.json())
+    //   .catch(error=>{
+    //     // console.error('Error', error)
+    //   })
+    //   .then(response =>{
+    //     this.dispatch('MeetupStore.setSession', response);
+    //   });
       
-    }
+    // }
     
 }
 

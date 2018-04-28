@@ -28,6 +28,14 @@ export class MeetupStore extends Flux.Store {
        });
        return eventSend;
      }
+     
+     
+    //  loadSession(){
+    //      return this.state.session;
+    //  }
+     
+     
+     
     //      let events = [];
          
     //      this.state.meetups.forEach((meetup)=>{
@@ -165,9 +173,9 @@ export class MeetupStore extends Flux.Store {
         this.setStoreState(tempState).emit();    
     }
     
-    _setSession(userInfo){
+    _setSession(data){
         let tempState = this.state;
-        tempState.session =userInfo.results[0];
+        tempState.session = data;
         this.setStoreState(tempState).emit();
     }
     getSession(){

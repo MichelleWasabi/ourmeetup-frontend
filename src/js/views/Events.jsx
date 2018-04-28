@@ -4,14 +4,19 @@ import { Link } from "react-router-dom";
 import Navbar from '../component/Navbar.jsx';
 import Moment from "moment";
 import MeetupStore from '../stores/MeetupStore.jsx';
-import meetupActions from '../actions/MeetupActions.jsx';
+import MeetupActions from '../actions/MeetupActions.jsx';
 export default class Events extends Flux.View {
     
-    constructor(){
-        super();
+    constructor(props, context){
+        super(props, context);
+        this.login = this.login.bind(this);
+        this.handleUsername = this.handleUsername.bind(this);
+        this.handlePassword = this.handlePassword.bind(this);
         
         this.state = {
-            event: {},
+            events: MeetupStore.getAllEvents(),
+            username: '',
+            password: '',
             session: {}
         };
             //bind hears changes from the store 
@@ -33,33 +38,87 @@ export default class Events extends Flux.View {
     }
         // let nextMeetup = meetupStore.getMeetup(this.props.match.params.id);
         // this.setState(nextMeetup);
+        
+handleUsername(e){
+    let tempState = this.state;
+    tempState.username = e.target.value;
+    this.setState(tempState);
+}
+
+handlePassword(e){
+    let tempState = this.state;
+    tempState.password = e.target.value;
+    this.setState(tempState);
+}
+
+ //this gets called when the user clicks and prevents the page from doing it's defualt behavior once submit is clicked
+    login(e){
+        e.preventDefault();
+        MeetupActions.loadSession(this.state.username, this.state.password);
+        return false;
+    }
+    
     
     
     render(){
+        
+        let rsvpButtons = typeof (this.state.session.user_nicename) === 'undefined' ?
+            <div>    
+                <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Login to RSVP
+                </button>
+                
+                <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                    
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLabel">Member Login</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                              
+                            <div className="modal-body">    
+                                <form className="form-group" role="form" onSubmit={this.login}>       
+                                    <label htmlFor="formGroupExampleInput">User Name</label>
+                                    <input type="text" className="form-control form-control-lg" id="username" name="user" value={this.state.user} placeholder="insert username" onChange ={this.handleUsername} />
+                                    <label htmlFor="formGroupExampleInput2">Password</label>
+                                    <input type="text" className="form-control form-control-lg" id="password"  name="password" value={this.state.password} placeholder="insert password" onChange= {this.handlePassword} />
+                                    <button className="btn btn-lg btn-primary btn-block" type="submit">Login</button>   
+                                </form>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+
+        :
+
+            <div className="row rsvpBTN flex-nowrap">
+                <div className="col-md-5">
+                    <button type="button" className="btn btn-primary w-100 yesBTN" disabled={yesDisabled} onClick={() => MeetupActions.rsvpEvent(this.props.match.params.id, this.state.session.user_nicename, "yes")}>You're in!</button>
+                </div>
+                <div className="col-md-5">
+                    <button type="button" className="btn btn-primary w-100 noBTN" disabled={noDisabled} onClick={() => MeetupActions.rsvpEvent(this.props.match.params.id, this.state.session.user_nicename, "no")}>You're out!</button>            
+                </div>
+            </div>;
         
         if(typeof this.state.event === 'undefined') return (<h2> event not found</h2>);
         let yesDisabled = "";
         let noDisabled = "";
         if(typeof this.state.event.meta_keys._rsvpYes !== 'undefined'){
-            yesDisabled = this.state.event.meta_keys._rsvpYes.includes(this.state.session.id.value) ? "disabled" : "";
+            yesDisabled = this.state.event.meta_keys._rsvpYes.includes(this.state.session.user_nicename) ? "disabled" : "";
         }
         if(typeof this.state.event.meta_keys._rsvpNo !== 'undefined'){
-            noDisabled = this.state.event.meta_keys._rsvpNo.includes(this.state.session.id.value) ? "disabled" : "";
+            noDisabled = this.state.event.meta_keys._rsvpNo.includes(this.state.session.user_nicename) ? "disabled" : "";
         }
 
-        let rsvpButtons =    
-                <div className="row rsvpBTN flex-nowrap">
-                    <div className="col-md-5">
-                        <button type="button" className="btn btn-primary w-100 yesBTN" disabled={yesDisabled} onClick={() => meetupActions.rsvpEvent(this.props.match.params.ID, this.state.session.id.value, "yes")}>You're in!</button>
-                    </div>
-                    <div className="col-md-5">
-                        <button type="button" className="btn btn-primary w-100 noBTN" disabled={noDisabled} onClick={() => meetupActions.rsvpEvent(this.props.match.params.ID), "no"}>You're out!</button>            
-                    </div>
-                </div>;
+        
          {/* regular expressions google it regexr.com so you can more effectively use replace PRACTICE ON THEIR WEBSITE */}
          let newDate = Moment(this.state.event.meta_keys.day + "T" + this.state.event.meta_keys.time.replace(/:/g, ""));
          
-         let theMeetup = typeof(this.state.event.meetup !== 'undefined' ? this.state.event.meetup: {ID:0, post_title: "Loadin"});
+         let theMeetup = typeof(this.state.event.meetup !== 'undefined' ? this.state.event.meetup: {ID:0, post_title: "Loading"});
        
         return(
             <div>
